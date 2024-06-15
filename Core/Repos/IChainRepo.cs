@@ -5,7 +5,7 @@ namespace Core.Repos;
 
 public interface IChainRepo
 {
-    Task<RetailChain> GetAsync(Guid id);
+    Task<RetailChain?> GetSingleAsync(Guid id);
     Task<IEnumerable<RetailChain>> GetAsync();
     Task<(ECreateChainResponse response, RetailChain? chain)> AddAsync(RetailChain item);
     Task<(EUpdateChainResponse response, RetailChain? Updatedchain)> UpdateAsync(Guid id, RetailChain item);

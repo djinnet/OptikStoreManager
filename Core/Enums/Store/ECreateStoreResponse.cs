@@ -1,3 +1,3 @@
 ﻿namespace Core.Enums;
 
-public enum ECreateStoreResponse { NotFound, FailedToCreate, SuccessToCreate, NumberAlreadyExist }
+public enum ECreateStoreResponse { NotFound, ItemIsEmpty, FailedToCreate, SuccessToCreate, NumberAlreadyExist }

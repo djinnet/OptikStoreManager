@@ -54,7 +54,7 @@ public class StoreController : ControllerBase
     {
         try
         {
-            RetailStore? store = await _storeRepo.GetAsync(id);
+            RetailStore? store = await _storeRepo.GetSingleAsync(id);
             if (store == null)
             {
                 return NotFound("The store could not be found.");
@@ -78,11 +78,6 @@ public class StoreController : ControllerBase
     {
         try
         {
-            if (viewModel == null)
-            {
-                return BadRequest("store data is empty");
-            }
-
             (ECreateStoreResponse response, RetailStore? store) = await _storeRepo.AddAsync(viewModel);
 
             return response switch
@@ -91,6 +86,7 @@ public class StoreController : ControllerBase
                 ECreateStoreResponse.NotFound => NotFound($"Not found the chain's id. Store name: {store?.Name} | Store chain name: {store?.Chain?.Name} "),
                 ECreateStoreResponse.FailedToCreate => BadRequest("Failed to create store"),
                 ECreateStoreResponse.NumberAlreadyExist => BadRequest($"Store number {store?.Number} already exists. Please choose another number."),
+                ECreateStoreResponse.ItemIsEmpty => BadRequest("Store data is empty"),
                 _ => CreatedAtRoute("Get", new { store?.Id }, store),
             };
         }
@@ -110,17 +106,6 @@ public class StoreController : ControllerBase
     {
         try
         {
-            if (model == null)
-            {
-                return NotFound("Cannot find model!");
-
-            }
-
-            if (id != model.Id)
-            {
-                return BadRequest("Id doesnt match with body");
-            }
-
             (EUpdateStoreResponse response, RetailStore? Updatedstore) = await _storeRepo.UpdateAsync(id, model);
 
             return response switch
@@ -129,7 +114,9 @@ public class StoreController : ControllerBase
                 EUpdateStoreResponse.NotFound => NotFound($"Not found the chain's id. Store name: {Updatedstore?.Name} | Store chain name: {Updatedstore?.Chain?.Name} "),
                 EUpdateStoreResponse.FailedToUpdate => BadRequest("Failed to update store"),
                 EUpdateStoreResponse.NumberAlreadyExist => BadRequest($"Store number {Updatedstore?.Number} already exists. Please choose another number."),
-                _ => NoContent()
+                EUpdateStoreResponse.ItemIsNull => NotFound("Cannot find model"),
+                EUpdateStoreResponse.IDNoMatch => BadRequest("Id doesnt match with body"),
+                _ => Ok("The store has been updated.")
             };
         }
         catch (EditUnauthorizedException<RetailStore> ex)
@@ -152,7 +139,7 @@ public class StoreController : ControllerBase
             {
                 EDeleteStoreResponse.NotFound => NotFound("The store cannot be found."),
                 EDeleteStoreResponse.FailedToDelete => BadRequest("The store cannot be delete."),
-                _ => NoContent(),
+                _ => Ok("The store has been deleted."),
             };
         }
         catch (DeleteUnauthorizedException<RetailStore> ex)
