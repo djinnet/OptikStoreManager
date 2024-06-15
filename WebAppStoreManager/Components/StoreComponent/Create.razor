@@ -1,0 +1,97 @@
+﻿@page "/admin/stores/create"
+
+@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager navigationManager
+
+@attribute [Authorize]
+
+<PageTitle>Create Store</PageTitle>
+<style>
+    .valid.modified:not([type=checkbox]) {
+        outline: 1px solid #26b050;
+    }
+
+    .invalid {
+        outline: 1px solid red;
+    }
+
+    .validation-message {
+        color: red;
+    }
+</style>
+
+<AuthorizeView>
+    <Authorized>
+        @if (@context.User.IsInRole(UserRoles.Admin))
+        {
+            @if (CurrentStore is null)
+            {
+                <p>...Loading...</p>
+            }
+            else
+            {
+                <div class="container">
+                    <br />
+                    <NavLink class="btn btn-primary" href="@($"admin/stores/")">
+                        Back
+                    </NavLink>
+                    <br />
+                    <div class="row justify-content-center">
+                        <div class="col col-lg-6">
+                            <EditForm Context="edit" class="card mt-7" Model="@CurrentStore" OnValidSubmit="HandleValidSubmit">
+                                <DataAnnotationsValidator />
+                                <div class="mt-@(edit.Validate() is false ? "3" : "0")">
+                                    <ValidationSummary />
+                                </div>
+                                <div class="card-header h3 milad-block">
+                                    <p>CREATE STORE</p>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row mb-3">
+                                        <label class="col-md-2 col-form-label">Name: <span class="text-danger">*</span></label>
+                                        <div class="col-md-10">
+                                            <InputText class="form-control" @bind-Value="CurrentStore.Name" Placeholder="Enter name" />
+                                            <ValidationMessage For="@(() => CurrentStore.Name)" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group row mb-3">
+                                        <label class="col-md-2 col-form-label">Number: <span class="text-danger">*</span></label>
+                                        <div class="col-md-10">
+                                            <InputNumber class="form-control" @bind-Value="CurrentStore.Number" Placeholder="Enter name" />
+                                            <ValidationMessage For="@(() => CurrentStore.Number)" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@(edit.Validate() is false)">
+                                            Send
+                                        </Button>
+                                    </div>
+                                </div>
+                                
+                            </EditForm>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>You're not signed in as a user in @UserRoles.Admin.</p>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p>You're not loggged in.</p>
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+    private RetailStore? CurrentStore { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        if (CurrentStore == null) return;
+        //(string AccessToken, string RefreshToken) = await loginService.GetToken();
+
+        //await client.CreateChainAsync(CurrentChain, AccessToken);
+        navigationManager.NavigateTo("/admin/stores");
+    }
+}
