@@ -1,4 +1,4 @@
-﻿@page "/admin/stores/create"
+﻿@page "/stores/create"
 
 @using Microsoft.AspNetCore.Authorization
 @inject NavigationManager navigationManager
@@ -32,7 +32,7 @@
             {
                 <div class="container">
                     <br />
-                    <NavLink class="btn btn-primary" href="@($"admin/stores/")">
+                    <NavLink class="btn btn-primary" href="@($"stores/")">
                         Back
                     </NavLink>
                     <br />
@@ -92,6 +92,6 @@
         //(string AccessToken, string RefreshToken) = await loginService.GetToken();
 
         //await client.CreateChainAsync(CurrentChain, AccessToken);
-        navigationManager.NavigateTo("/admin/stores");
+        navigationManager.NavigateTo("/stores");
     }
 }

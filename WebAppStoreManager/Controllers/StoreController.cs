@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Core.Enums;
 using Core.Exceptions;
 
-namespace WebApiStoreManager.Controllers;
+namespace WebAppStoreManager.Controllers;
 
 [Authorize(Roles = UserRoles.Admin)]
 [ApiController]
@@ -45,12 +45,11 @@ public class StoreController : ControllerBase
         }
     }
 
-    [HttpGet]
-    [Route("{id:guid}", Name = "Get")]
+    [HttpGet, Route("[controller]/GetSingle")]
     [ProducesResponseType(typeof(RetailStore), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Get([FromRoute] Guid id)
+    public async Task<IActionResult> GetSingle([FromRoute] Guid id)
     {
         try
         {

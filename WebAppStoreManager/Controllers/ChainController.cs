@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApiStoreManager.Controllers;
+namespace WebAppStoreManager.Controllers;
 
 /// <summary>
 /// This is the API controller for chains that managed the stores.
@@ -60,11 +60,11 @@ public class ChainController : ControllerBase
     /// </summary>
     /// <param name="id">The id of the chain</param>
     /// <returns>Return a chain with the given id</returns>
-    [Route("{id:guid}", Name = "Get")]
+    [HttpGet, Route("[controller]/GetSingle")]
     [ProducesResponseType(typeof(RetailStore), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Get(Guid id)
+    public async Task<IActionResult> GetSingle(Guid id)
     {
         try
         {

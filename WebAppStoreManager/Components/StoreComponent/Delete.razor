@@ -1,4 +1,4 @@
-﻿@page "/admin/stores/delete/{id:guid}"
+﻿@page "/stores/delete/{id:guid}"
 
 @using Microsoft.AspNetCore.Authorization
 @inject NavigationManager navigationManager
@@ -19,7 +19,7 @@
             {
                 <div class="container">
                     <br />
-                    <NavLink class="btn btn-primary" href="@($"admin/stores/")">
+                    <NavLink class="btn btn-primary" href="@($"stores/")">
                         Back
                     </NavLink>
                     <br />
@@ -77,6 +77,6 @@
     {
         //(string AccessToken, string RefreshToken) = await loginService.GetToken();
         //await client.DeleteFerretAsync(Id, AccessToken);
-        navigationManager.NavigateTo("/admin/chains");
+        navigationManager.NavigateTo("/chains");
     }
 }

@@ -1,4 +1,4 @@
-﻿@page "/admin/chains/update/{id:guid}"
+﻿@page "/chains/update/{id:guid}"
 
 @using Microsoft.AspNetCore.Authorization
 @inject NavigationManager navigationManager
@@ -32,7 +32,7 @@
             {
                 <div class="container">
                     <br />
-                    <NavLink class="btn btn-primary" href="@($"Admin/Chains/")">
+                    <NavLink class="btn btn-primary" href="@($"chains/")">
                         Back
                     </NavLink>
                     <br />
@@ -88,6 +88,6 @@
         //(string AccessToken, string RefreshToken) = await loginService.GetToken();
 
         //await client.CreateChainAsync(CurrentChain, AccessToken);
-        navigationManager.NavigateTo("/admin/chains");
+        navigationManager.NavigateTo("/chains");
     }
 }

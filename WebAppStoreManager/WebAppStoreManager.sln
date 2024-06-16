@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppStoreManager", "WebAppStoreManager.csproj", "{AD45E4F8-316D-410E-96B3-D088AA798940}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAppStoreManager", "WebAppStoreManager.csproj", "{AD45E4F8-316D-410E-96B3-D088AA798940}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\Core\Core.csproj", "{92648BE2-2416-4E97-B10B-AA5ACF8D5E34}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiStoreManager", "..\WebApiStoreManager\WebApiStoreManager.csproj", "{83166761-1613-4807-849B-6799AECBF342}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Core\Core.csproj", "{92648BE2-2416-4E97-B10B-AA5ACF8D5E34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +21,6 @@ Global
 		{92648BE2-2416-4E97-B10B-AA5ACF8D5E34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92648BE2-2416-4E97-B10B-AA5ACF8D5E34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92648BE2-2416-4E97-B10B-AA5ACF8D5E34}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83166761-1613-4807-849B-6799AECBF342}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83166761-1613-4807-849B-6799AECBF342}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83166761-1613-4807-849B-6799AECBF342}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83166761-1613-4807-849B-6799AECBF342}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
