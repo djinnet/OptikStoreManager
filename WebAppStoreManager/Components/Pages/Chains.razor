@@ -1,13 +1,61 @@
 ﻿@page "/chains"
 
 @using Microsoft.AspNetCore.Authorization
+@inject IEndpointsClient client
 
 @attribute [Authorize]
 
 <PageTitle>Chains</PageTitle>
 
-<h1>You are authenticated</h1>
-
 <AuthorizeView>
-    Hello @context.User.Identity?.Name!
+    @if(ChainsData == null)
+    {
+        <p><em>Loading</em></p>
+    }
+    else
+    {
+        <NavLink class="btn btn-success" href="@($"chains/create")">
+            Add an new Chain
+        </NavLink>
+
+        <div class="table_component">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Chain Name</th>
+                        <th>Amount of the stores</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var chain in ChainsData)
+                    {
+                        <tr>
+                            <td>@chain.ChainName</td>
+                            <td>@(chain.Stores.Count)</td>
+                            <td>
+                                <NavLink class="btn btn-primary" href="@($"chains/update/{chain.Id}")">
+                                    Edit
+                                </NavLink>
+                                <NavLink class="btn btn-danger" href="@($"chains/delete/{chain.Id}")">
+                                    Delete
+                                </NavLink>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    
 </AuthorizeView>
+
+@code{
+    public List<RetailChain>? ChainsData { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        ChainsData = await client.GetChainsAsync();
+    }
+}

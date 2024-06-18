@@ -1,7 +1,9 @@
-﻿@page "/stores/update"
+﻿@page "/stores/update/{id:guid}"
+@rendermode InteractiveServer
 
 @using Microsoft.AspNetCore.Authorization
 @inject NavigationManager navigationManager
+@inject IEndpointsClient client
 
 @attribute [Authorize]
 
@@ -36,8 +38,15 @@
                         Back
                     </NavLink>
                     <br />
+                    @if(string.IsNullOrEmpty(ErrorMsg) == false)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @ErrorMsg
+                        </div>
+                    }
+                    
                     <div class="row justify-content-center">
-                        <div class="col col-lg-6">
+                        <div class="col col-lg-15">
                             <EditForm Context="edit" class="card mt-7" Model="@CurrentStore" OnValidSubmit="HandleValidSubmit">
                                 <DataAnnotationsValidator />
                                 <div class="mt-@(edit.Validate() is false ? "3" : "0")">
@@ -50,17 +59,92 @@
                                     <div class="form-group row mb-3">
                                         <label class="col-md-2 col-form-label">Name: <span class="text-danger">*</span></label>
                                         <div class="col-md-10">
-                                            <InputText class="form-control" @bind-Value="CurrentStore.Name" Placeholder="Enter name" />
-                                            <ValidationMessage For="@(() => CurrentStore.Name)" />
+                                            <InputText class="form-control" @bind-Value="CurrentStore.StoreName" Placeholder="Enter name" />
+                                            <ValidationMessage For="@(() => CurrentStore.StoreName)" />
                                         </div>
                                     </div>
                                     <div class="form-group row mb-3">
                                         <label class="col-md-2 col-form-label">Number: <span class="text-danger">*</span></label>
                                         <div class="col-md-10">
-                                            <InputNumber class="form-control" @bind-Value="CurrentStore.Number" Placeholder="Enter name" />
+                                            <InputNumber class="form-control" @bind-Value="CurrentStore.Number" Placeholder="Enter number" />
                                             <ValidationMessage For="@(() => CurrentStore.Number)" />
                                         </div>
                                     </div>
+                                    <div class="form-group row mb-3">
+                                        <label class="col-md-2 col-form-label">Address: </label>
+                                        <div class="col-md-10">
+                                            <InputText class="form-control" @bind-Value="CurrentStore.Address" Placeholder="Enter Address" />
+                                            <ValidationMessage For="@(() => CurrentStore.Address)" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-3">
+                                        <label class="col-md-2 col-form-label">City: </label>
+                                        <div class="col-md-10">
+                                            <InputText class="form-control" @bind-Value="CurrentStore.City" Placeholder="Enter city" />
+                                            <ValidationMessage For="@(() => CurrentStore.City)" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-3">
+                                        <label class="col-md-2 col-form-label">Region: </label>
+                                        <div class="col-md-10">
+                                            <InputText class="form-control" @bind-Value="CurrentStore.Region" Placeholder="Enter Region" />
+                                            <ValidationMessage For="@(() => CurrentStore.Region)" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-3">
+                                        <label class="col-md-2 col-form-label">PostalCode: </label>
+                                        <div class="col-md-10">
+                                            <InputText class="form-control" @bind-Value="CurrentStore.PostalCode" Placeholder="Enter PostalCode" />
+                                            <ValidationMessage For="@(() => CurrentStore.PostalCode)" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-3">
+                                        <label class="col-md-2 col-form-label">Country: </label>
+                                        <div class="col-md-10">
+                                            <InputText class="form-control" @bind-Value="CurrentStore.Country" Placeholder="Enter Country" />
+                                            <ValidationMessage For="@(() => CurrentStore.Country)" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-3">
+                                        <label class="col-md-2 col-form-label">Phone: </label>
+                                        <div class="col-md-10">
+                                            <InputText class="form-control" @bind-Value="CurrentStore.Phone" Placeholder="Enter Phone" />
+                                            <ValidationMessage For="@(() => CurrentStore.Phone)" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-3">
+                                        <label class="col-md-2 col-form-label">Email: </label>
+                                        <div class="col-md-10">
+                                            <InputText class="form-control" @bind-Value="CurrentStore.Email" Placeholder="Enter Email" />
+                                            <ValidationMessage For="@(() => CurrentStore.Email)" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-3">
+                                        <label class="col-md-2 col-form-label">StoreOwner: </label>
+                                        <div class="col-md-10">
+                                            <InputText class="form-control" @bind-Value="CurrentStore.StoreOwner" Placeholder="Enter StoreOwner" />
+                                            <ValidationMessage For="@(() => CurrentStore.StoreOwner)" />
+                                        </div>
+                                    </div>
+
+                                    @if (OptionretailChains != null)
+                                    {
+                                        @if (OptionretailChains.Count > 0)
+                                        {
+                                            <WebAppStoreManager.Components.DropDownComponent.Dropdown Options="OptionretailChains" CSSclass="form-select" @bind-Value="_selectedOptionValue" @bind-Value:after="this.OnSelectionChanged"></WebAppStoreManager.Components.DropDownComponent.Dropdown>
+
+                                        }
+                                    }
+                                    
+                                    
+
                                     <div class="mt-3">
                                         <Button Color="ButtonColor.Primary" Type="ButtonType.Submit" Disabled="@(edit.Validate() is false)">
                                             Send
@@ -84,14 +168,78 @@
     </NotAuthorized>
 </AuthorizeView>
 @code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
     private RetailStore? CurrentStore { get; set; }
+
+    private List<WebAppStoreManager.Components.DropDownComponent.Dropdown.Option>? OptionretailChains { get; set; } = new List<DropDownComponent.Dropdown.Option>();
+
+    private Guid? _selectedOptionValue { get; set; } = null;
+
+    private string ErrorMsg { get; set; } = string.Empty;
+
+    public void OnSelectionChanged()
+    {
+        if (CurrentStore == null) return;
+        
+        //Current workaround
+        if (_selectedOptionValue == Guid.Empty)
+        {
+            CurrentStore.ChainId = null;
+            return;
+        }
+
+        
+        var foundChain = (OptionretailChains?.FirstOrDefault(x => x.Value.ToString() == _selectedOptionValue?.ToString()));
+        if (foundChain == null)
+        {
+            CurrentStore.ChainId = null;
+            return;
+        }
+
+        CurrentStore.ChainId = foundChain.Value;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CurrentStore = await client.GetStoreAsync(Id);
+        if (CurrentStore?.ChainId != null)
+        {
+            OptionretailChains.Add(new DropDownComponent.Dropdown.Option(Guid.Empty, "-- Choose a Value --"));
+            _selectedOptionValue = CurrentStore.ChainId;
+        }
+        
+        var retailChains = await client.GetChainsAsync();
+        
+        foreach (var item in retailChains)
+        {
+            OptionretailChains.Add(new DropDownComponent.Dropdown.Option(item.Id, item.ChainName));
+        }
+        
+    }
 
     private async Task HandleValidSubmit()
     {
         if (CurrentStore == null) return;
-        //(string AccessToken, string RefreshToken) = await loginService.GetToken();
+        
+        var response = await client.UpdateStoreAsync(CurrentStore);
+        if(response == null)
+        {
+            ErrorMsg = "Error updating store";
+            return;
+        }
+        
+        if(response.httpstatus == 200)
+        {
+            navigationManager.NavigateTo("/stores");
+        }
+        else
+        {
+            //arr into an single string
+            ErrorMsg = string.Join(",", response.errors);
+        }
 
-        //await client.CreateChainAsync(CurrentChain, AccessToken);
-        navigationManager.NavigateTo("/chains");
     }
 }

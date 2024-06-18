@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 namespace Core.Models;
 
 [Table("Chain")]
@@ -9,8 +10,7 @@ public class RetailChain
     [Key]
     public Guid Id { get; set; }
 
-    [Required]
-    public required string Name { get; set; }
+    public required string ChainName { get; set; }
 
     public DateTime CreatedOn { get; set; }
 

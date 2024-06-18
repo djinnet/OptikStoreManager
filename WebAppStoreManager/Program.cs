@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using WebAppStoreManager.Components;
 using WebAppStoreManager.Components.Account;
 using Core.Database;
-using System.Data;
 using Core.Repos;
-using System.Text.Json.Serialization;
+using WebAppStoreManager.Services;
+using Newtonsoft.Json;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 
 namespace WebAppStoreManager;
 public class Program
@@ -18,10 +20,14 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
-
+        builder.Services.AddHttpClient<EndpointsClient>();
+        
+        builder.Services.AddBlazorBootstrap();
+        
         builder.Services.AddTransient<DatabaseInitializer>();
         builder.Services.AddScoped<IChainRepo, ChainRepo>();
         builder.Services.AddScoped<IStoreRepo, StoreRepo>();
+        builder.Services.AddScoped<IEndpointsClient, EndpointsClient>();
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddScoped<IdentityUserAccessor>();
         builder.Services.AddScoped<IdentityRedirectManager>();
@@ -56,10 +62,21 @@ public class Program
 
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-        builder.Services.AddControllers().AddJsonOptions(options =>
+        builder.Services.AddControllers().AddNewtonsoftJson(n =>
         {
-            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-            options.JsonSerializerOptions.WriteIndented = true;
+            n.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            n.SerializerSettings.Formatting = Formatting.Indented;
+            n.SerializerSettings.Converters.Add(new StringEnumConverter());
+        });
+
+        builder.Services.AddSwaggerGen(option =>
+        {
+            option.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "Demo API",
+                Version = "v1",
+                Description = "An demo of the Web API"
+            });
         });
 
         var app = builder.Build();
@@ -67,6 +84,11 @@ public class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.DefaultModelsExpandDepth(-1);
+            });
             app.UseMigrationsEndPoint();
         }
         else
@@ -75,6 +97,7 @@ public class Program
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
+        
 
         app.UseHttpsRedirection();
 

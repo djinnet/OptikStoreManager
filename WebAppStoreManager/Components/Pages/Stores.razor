@@ -1,13 +1,66 @@
 ﻿@page "/stores"
 
 @using Microsoft.AspNetCore.Authorization
+@inject IEndpointsClient client
 
 @attribute [Authorize]
 
 <PageTitle>Stores</PageTitle>
 
-<h1>You are authenticated</h1>
-
 <AuthorizeView>
-    Hello @context.User.Identity?.Name!
+    @if (StoreData == null)
+    {
+        <p><em>Loading</em></p>
+    }
+    else
+    {
+        <NavLink class="btn btn-success" href="@($"stores/create")">
+            Add an new Store
+        </NavLink>
+
+        <div class="table_component">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Store Name</th>
+                        <th>Store Number</th>
+                        <th>Store Address</th>
+                        <th>Is part of chain?</th>
+                        <th>Chain name</th>
+                        <th>Store owner</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var store in StoreData)
+                    {
+                        <tr>
+                            <td>@store.StoreName</td>
+                            <td>@store.Number</td>
+                            <td>@store.FullAddress</td>
+                            <td>@store.IsPartOfChain</td>
+                            <td>@store.Chain?.ChainName</td>
+                            <td>@store.StoreOwner</td>
+                            <td>
+                                <NavLink class="btn btn-primary" href="@($"stores/update/{store.Id}")">
+                                    Edit
+                                </NavLink>
+                                <NavLink class="btn btn-danger" href="@($"stores/delete/{store.Id}")">
+                                    Delete
+                                </NavLink>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </AuthorizeView>
+@code{
+    public List<RetailStore>? StoreData { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        StoreData = await client.GetStoresAsync();
+    }
+}

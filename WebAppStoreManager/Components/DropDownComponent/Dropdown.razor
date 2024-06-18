@@ -1,0 +1,37 @@
+﻿<select @bind:get="@Value" @bind:set="SelectionChanged" class="@CSSclass">
+
+    @if (this.Value == null)
+    {
+        <option selected disabled value="0">@this.NullText</option>
+    }
+
+    @foreach (var opt in Options)
+    {
+        <option value="@opt.Value">@opt.Name</option>
+    }
+
+</select>
+
+@code {
+    [Parameter] public Guid? Value { get; set; }
+    [Parameter] public EventCallback<Guid?> ValueChanged { get; set; }
+    [Parameter] public string CSSclass { get; set; } = "";
+    [Parameter] public IEnumerable<Option> Options { get; set; } = Enumerable.Empty<Option>();
+    [Parameter] public string NullText { get; set; } = " -- Choose a Value -- ";
+
+    async Task SelectionChanged(Guid? value)
+    {
+        await this.ValueChanged.InvokeAsync(value);
+    }
+
+    public class Option
+    {
+        public Option(Guid? value, string? name = "")
+        {
+            Value = value;
+            Name = name;
+        }
+        public Guid? Value { get; set; }
+        public string? Name { get; set; }
+    }
+}

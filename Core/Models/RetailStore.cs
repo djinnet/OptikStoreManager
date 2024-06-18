@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Core.Models;
 
@@ -18,13 +19,10 @@ public class RetailStore
     public Guid Id { get; set; }
 
     //the property Is required to filled out
-    //Note: This will be unique, however I am not sure if that makes sense to marked this unique in database level due to index bug.
-    [Required]
     public required int Number {  get; set; }
 
     //the property Is required to filled out
-    [Required]
-    public required string Name { get; set; }
+    public required string StoreName { get; set; }
 
     //rest is optional properties
 
@@ -44,4 +42,12 @@ public class RetailStore
     //relationship with the chain
     public Guid? ChainId { get; set; }
     public RetailChain? Chain { get; set; } = null;
+
+    [NotMapped]
+    [JsonIgnore]
+    public string FullAddress => $"{City} {Region} {PostalCode} {Country}";
+
+    [NotMapped]
+    [JsonIgnore]
+    public string IsPartOfChain => ChainId == null || ChainId == Guid.Empty ? "No" : "Yes";
 }

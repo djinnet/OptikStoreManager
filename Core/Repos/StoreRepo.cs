@@ -46,7 +46,7 @@ public class StoreRepo : IStoreRepo
             //create an new object with current time
             RetailStore retailStore = new()
             {
-                Name = item.Name,
+                StoreName = item.StoreName,
                 Number = item.Number,
                 CreatedOn = DateTime.UtcNow,
                 ModifiedOn = DateTime.UtcNow,             
@@ -95,7 +95,7 @@ public class StoreRepo : IStoreRepo
     {
         try
         {
-            return await _context.RetailStores.AsNoTracking().ToListAsync();
+            return await _context.RetailStores.Include(i => i.Chain).AsNoTracking().ToListAsync();
         }
         catch (Exception)
         {
@@ -123,14 +123,19 @@ public class StoreRepo : IStoreRepo
             return (EUpdateStoreResponse.NotFound, item);
         }
 
-        //Check if the number already exists in database with a number value that is provided by an application user
-        if (_context.RetailStores.Any(i => i.Number == item.Number))
+        //if the number is a new number
+        if(FoundStore.Number != item.Number)
         {
-            //if the value matched, then it exists. No duplicated number allowed.
-            return (EUpdateStoreResponse.NumberAlreadyExist, FoundStore);
+            //Check if the number already exists in database with a number value that is provided by an application user
+            if (_context.RetailStores.Any(i => i.Number == item.Number))
+            {
+                //if the value matched, then it exists. No duplicated number allowed.
+                return (EUpdateStoreResponse.NumberAlreadyExist, FoundStore);
+            }
         }
+        
 
-        FoundStore.Name = item.Name;
+        FoundStore.StoreName = item.StoreName;
         FoundStore.Number = item.Number;
         FoundStore.ChainId = item.ChainId;
         FoundStore.ModifiedOn = DateTime.UtcNow; //updated to current time

@@ -1,7 +1,9 @@
 ﻿@page "/chains/update/{id:guid}"
+@rendermode InteractiveServer
 
 @using Microsoft.AspNetCore.Authorization
 @inject NavigationManager navigationManager
+@inject IEndpointsClient client
 
 @attribute [Authorize]
 
@@ -36,8 +38,14 @@
                         Back
                     </NavLink>
                     <br />
+                    @if (string.IsNullOrEmpty(ErrorMsg) == false)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @ErrorMsg
+                        </div>
+                    }
                     <div class="row justify-content-center">
-                        <div class="col col-lg-6">
+                        <div class="col col-lg-15">
                             <EditForm Context="edit" class="card mt-7" Model="@CurrentChain" OnValidSubmit="HandleValidSubmit">
                                 <DataAnnotationsValidator />
                                 <div class="mt-@(edit.Validate() is false ? "3" : "0")">
@@ -50,8 +58,8 @@
                                     <div class="form-group row mb-3">
                                         <label class="col-md-2 col-form-label">Name: <span class="text-danger">*</span></label>
                                         <div class="col-md-10">
-                                            <InputText class="form-control" @bind-Value="CurrentChain.Name" Placeholder="Enter name" />
-                                            <ValidationMessage For="@(() => CurrentChain.Name)" />
+                                            <InputText class="form-control" @bind-Value="CurrentChain.ChainName" Placeholder="Enter name" />
+                                            <ValidationMessage For="@(() => CurrentChain.ChainName)" />
                                         </div>
                                     </div>
                                     <div class="mt-3">
@@ -60,8 +68,31 @@
                                         </Button>
                                     </div>
                                 </div>
-                                
                             </EditForm>
+
+                            @if(CurrentChain.Stores.Count > 0)
+                            {
+                                <div class="table_component">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Store Name</th>
+                                                <th>Store Number</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var chain in CurrentChain.Stores)
+                                            {
+                                                <tr>
+                                                    <td>@chain.StoreName</td>
+                                                    <td>@chain.Number.ToString()</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -80,14 +111,35 @@
     [Parameter]
     public Guid Id { get; set; }
 
+    private string ErrorMsg { get; set; } = string.Empty;
+
     private RetailChain? CurrentChain { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CurrentChain = await client.GetChainAsync(Id);
+    }
 
     private async Task HandleValidSubmit()
     {
         if (CurrentChain == null) return;
         //(string AccessToken, string RefreshToken) = await loginService.GetToken();
 
-        //await client.CreateChainAsync(CurrentChain, AccessToken);
-        navigationManager.NavigateTo("/chains");
+        var response = await client.UpdateChainAsync(CurrentChain);
+        if (response == null)
+        {
+            ErrorMsg = "Error updating chain";
+            return;
+        }
+
+        if (response.httpstatus == 200)
+        {
+            navigationManager.NavigateTo("/chains");
+        }
+        else
+        {
+            //arr into an single string
+            ErrorMsg = string.Join(",", response.errors);
+        }
     }
 }

@@ -35,8 +35,13 @@ public class ChainRepo : IChainRepo
                 return (ECreateChainResponse.NotFound, null);
             }
 
+            if (string.IsNullOrEmpty(item.ChainName))
+            {
+                return (ECreateChainResponse.NameIsEmpty, null);
+            }
+
             //Check if the number already exists in database with a number value that is provided by an application user
-            if (_context.RetailStores.Any(i => string.Equals(i.Name, item.Name)))
+            if (_context.RetailChains.Any(i => string.Equals(i.ChainName, item.ChainName)))
             {
                 //if the value matched, then it exists. No duplicated number allowed.
                 return (ECreateChainResponse.ChainAlreadyExist, item);
@@ -45,7 +50,7 @@ public class ChainRepo : IChainRepo
             //create an new object with current time
             RetailChain retailChain = new()
             {
-                Name = item.Name,
+                ChainName = item.ChainName,
                 CreatedOn = DateTime.UtcNow,
                 ModifiedOn = DateTime.UtcNow
             };
@@ -128,13 +133,13 @@ public class ChainRepo : IChainRepo
         }
 
         //Check if the number already exists in database with a number value that is provided by an application user
-        if (_context.RetailStores.Any(i => string.Equals(i.Name, item.Name)))
+        if (_context.RetailStores.Any(i => string.Equals(i.StoreName, item.ChainName)))
         {
             //if the value matched, then it exists. No duplicated number allowed.
             return (EUpdateChainResponse.ChainAlreadyExist, item);
         }
 
-        FoundretailChain.Name = item.Name;
+        FoundretailChain.ChainName = item.ChainName;
         FoundretailChain.ModifiedOn = DateTime.UtcNow; //updated to current time
 
         await _context.SaveChangesAsync();

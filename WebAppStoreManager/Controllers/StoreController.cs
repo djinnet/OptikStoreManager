@@ -9,7 +9,8 @@ using Core.Exceptions;
 
 namespace WebAppStoreManager.Controllers;
 
-[Authorize(Roles = UserRoles.Admin)]
+//[Authorize(Roles = UserRoles.Admin)]
+[AllowAnonymous]
 [ApiController]
 [Route("api/[controller]")]
 public class StoreController : ControllerBase
@@ -45,11 +46,11 @@ public class StoreController : ControllerBase
         }
     }
 
-    [HttpGet, Route("[controller]/GetSingle")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(RetailStore), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetSingle([FromRoute] Guid id)
+    public async Task<IActionResult> Get([FromRoute] Guid id)
     {
         try
         {
@@ -69,25 +70,36 @@ public class StoreController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(RetailStore), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Post([FromBody] RetailStore viewModel)
     {
         try
         {
+            var apiresponse = new ApiResponse<RetailStore?, ECreateStoreResponse>() { HttpStatus = StatusCodes.Status200OK };
             (ECreateStoreResponse response, RetailStore? store) = await _storeRepo.AddAsync(viewModel);
+            apiresponse.Result = store;
+            apiresponse.Status = response;
 
-            return response switch
+            switch (response)
             {
-                //If the chain is not found when we are added the store to the chain. Only happened if we are looking for the chain (if the store have an chain id), and it cant be found for some unknown reasons.
-                ECreateStoreResponse.NotFound => NotFound($"Not found the chain's id. Store name: {store?.Name} | Store chain name: {store?.Chain?.Name} "),
-                ECreateStoreResponse.FailedToCreate => BadRequest("Failed to create store"),
-                ECreateStoreResponse.NumberAlreadyExist => BadRequest($"Store number {store?.Number} already exists. Please choose another number."),
-                ECreateStoreResponse.ItemIsEmpty => BadRequest("Store data is empty"),
-                _ => CreatedAtRoute("Get", new { store?.Id }, store),
-            };
+                case ECreateStoreResponse.ItemIsEmpty:
+                    apiresponse.AddModelErrors("Store data is empty");
+                    apiresponse.HttpStatus = StatusCodes.Status400BadRequest;
+                    break;
+                case ECreateStoreResponse.NotFound:
+                    apiresponse.HttpStatus = StatusCodes.Status404NotFound;
+                    apiresponse.AddModelErrors($"Not found the chain's id. Store name: {store?.StoreName} | Store chain name: {store?.Chain?.ChainName} ");
+                    break;
+                case ECreateStoreResponse.NumberAlreadyExist:
+                    apiresponse.HttpStatus = StatusCodes.Status400BadRequest;
+                    apiresponse.AddModelErrors($"Store number {store?.Number} already exists. Please choose another number.");
+                    break;
+                case ECreateStoreResponse.FailedToCreate:
+                    apiresponse.HttpStatus = StatusCodes.Status400BadRequest;
+                    apiresponse.AddModelErrors("Failed to create chain.");
+                    break;
+            }
+
+            return Ok(apiresponse);
         }
         catch (CreateUnauthorizedException<RetailStore> ex)
         {
@@ -97,26 +109,40 @@ public class StoreController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] RetailStore model)
     {
         try
         {
+            var apiresponse = new ApiResponse<RetailStore?, EUpdateStoreResponse>() { HttpStatus = StatusCodes.Status200OK };
             (EUpdateStoreResponse response, RetailStore? Updatedstore) = await _storeRepo.UpdateAsync(id, model);
+            apiresponse.Result = Updatedstore;
+            apiresponse.Status = response;
 
-            return response switch
+            switch (response)
             {
-                //If the chain is not found when we are added the store to the chain. Only happened if we are looking for the chain (if the store have an chain id), and it cant be found for some unknown reasons.
-                EUpdateStoreResponse.NotFound => NotFound($"Not found the chain's id. Store name: {Updatedstore?.Name} | Store chain name: {Updatedstore?.Chain?.Name} "),
-                EUpdateStoreResponse.FailedToUpdate => BadRequest("Failed to update store"),
-                EUpdateStoreResponse.NumberAlreadyExist => BadRequest($"Store number {Updatedstore?.Number} already exists. Please choose another number."),
-                EUpdateStoreResponse.ItemIsNull => NotFound("Cannot find model"),
-                EUpdateStoreResponse.IDNoMatch => BadRequest("Id doesnt match with body"),
-                _ => Ok("The store has been updated.")
-            };
+                case EUpdateStoreResponse.ItemIsNull:
+                    apiresponse.HttpStatus = StatusCodes.Status400BadRequest;
+                    apiresponse.AddModelErrors("Cannot find model");
+                    break;
+                case EUpdateStoreResponse.NotFound:
+                    apiresponse.HttpStatus = StatusCodes.Status404NotFound;
+                    apiresponse.AddModelErrors($"Not found the chain's id. Store name: {Updatedstore?.StoreName} | Store chain name: {Updatedstore?.Chain?.ChainName} ");
+                    break;
+                case EUpdateStoreResponse.NumberAlreadyExist:
+                    apiresponse.HttpStatus = StatusCodes.Status400BadRequest;
+                    apiresponse.AddModelErrors($"Store number {model?.Number} already exists. Please choose another number.");
+                    break;
+                case EUpdateStoreResponse.IDNoMatch:
+                    apiresponse.HttpStatus = StatusCodes.Status400BadRequest;
+                    apiresponse.AddModelErrors("Id doesnt match with body");
+                    break;
+                case EUpdateStoreResponse.FailedToUpdate:
+                    apiresponse.HttpStatus = StatusCodes.Status400BadRequest;
+                    apiresponse.AddModelErrors("Failed to update store");
+                    break;
+            }
+
+            return Ok(apiresponse);
         }
         catch (EditUnauthorizedException<RetailStore> ex)
         {
@@ -133,13 +159,24 @@ public class StoreController : ControllerBase
     {
         try
         {
+            var apiresponse = new ApiResponse<string?, EDeleteStoreResponse>() { HttpStatus = StatusCodes.Status200OK };
             EDeleteStoreResponse response = await _storeRepo.DeleteAsync(id);
-            return response switch
+            apiresponse.Result = string.Empty;
+            apiresponse.Status = response;
+
+            switch (response)
             {
-                EDeleteStoreResponse.NotFound => NotFound("The store cannot be found."),
-                EDeleteStoreResponse.FailedToDelete => BadRequest("The store cannot be delete."),
-                _ => Ok("The store has been deleted."),
-            };
+                case EDeleteStoreResponse.NotFound:
+                    apiresponse.HttpStatus = StatusCodes.Status404NotFound;
+                    apiresponse.AddModelErrors($"The chain cannot be found.");
+                    break;
+                case EDeleteStoreResponse.FailedToDelete:
+                    apiresponse.HttpStatus = StatusCodes.Status400BadRequest;
+                    apiresponse.AddModelErrors($"The chain cannot be delete.");
+                    break;
+            }
+
+            return Ok(apiresponse);
         }
         catch (DeleteUnauthorizedException<RetailStore> ex)
         {

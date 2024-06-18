@@ -26,10 +26,10 @@ public class DatabaseInitializer
 
     public List<RetailChain> RetailChains { get; set; } =
     [
-        new(){ Name = "Opti View"},
-        new(){ Name = "FocalPoint"},
-        new(){ Name = "Focus Optics"},
-        new(){ Name = "ClearSight"}
+        new(){ ChainName = "Opti View"},
+        new(){ ChainName = "FocalPoint"},
+        new(){ ChainName = "Focus Optics"},
+        new(){ ChainName = "ClearSight"}
     ];
 
     /// <summary>
@@ -57,7 +57,7 @@ public class DatabaseInitializer
             {
                 foreach (RetailChain chain in RetailChains)
                 {
-                    if (!_context.RetailChains.Any(x => x.Name == chain.Name))
+                    if (!_context.RetailChains.Any(x => x.ChainName == chain.ChainName))
                     {
                         _context.RetailChains.Add(chain);
                     }
@@ -77,19 +77,29 @@ public class DatabaseInitializer
             {
                 //stores that belong to chains
                 RetailChains[0].Stores = [
-                    new RetailStore { Name = "Opti view Randers", Number = 1 },
-                    new RetailStore { Name = "Opti view Viborg", Number = 2 },
+                    new RetailStore { StoreName = "Opti view Randers", Number = 1, StoreOwner = "Lars Jensen", PostalCode = "8900", Region = "Midtjylland", City = "Randers", Address = "Emmavej 22", Country = "Danmark", Email = "", Phone = "" },
+                    new RetailStore { StoreName = "Opti view Aarhus", Number = 2, StoreOwner = "Hans Nielsen", PostalCode = "8000", Region = "Midtjylland", City = "Aarhus", Address = "Åboulevarden 22", Country = "Danmark", Email = "", Phone = "" },
+                    new RetailStore { StoreName = "Opti view København", Number = 3, StoreOwner = "Lars Andersen", PostalCode = "2100", Region = "Hovedstaden", City = "København", Address = "Nørrebrogade 22", Country = "Danmark", Email = "", Phone = "" }
                 ];
 
                 RetailChains[1].Stores = [
-                    new RetailStore { Name = "Focalpoint Aalborg", Number = 3 },
+                    new RetailStore { StoreName = "FocalPoint Odense", Number = 4, StoreOwner = "Hans Olesen", PostalCode = "5000", Region = "Syddanmark", City = "Odense", Address = "Vestergade 22", Country = "Danmark", Email = "", Phone = "" },
+                    new RetailStore { StoreName = "FocalPoint Svendborg", Number = 5, StoreOwner = "Emil Jensen", PostalCode = "5700", Region = "Syddanmark", City = "Svendborg", Address = "Havnegade 22", Country = "Danmark", Email = "", Phone = "" }
+                ];
+
+                RetailChains[2].Stores = [
+                    new RetailStore { StoreName = "Focus Optics Vejle", Number = 6, StoreOwner = "Hans Nielsen", PostalCode = "7100", Region = "Syddanmark", City = "Vejle", Address = "Nørregade 22", Country = "Danmark", Email = "", Phone = "" },
+                ];
+
+                RetailChains[3].Stores = [
                 ];
 
                 await _context.SaveChangesAsync();
 
                 //single store without a chain
-                await _context.RetailStores.AddAsync(new RetailStore { Name = "Jens butik", Number = 4 });
+                await _context.RetailStores.AddAsync(new RetailStore { StoreName = "Optia Vejle", Number = 7, StoreOwner = "Mikkel Nielsen", PostalCode = "7100", Region = "Syddanmark", City = "Vejle", Address = "Nørregade 22", Country = "Danmark", Email = "", Phone = "" });
                 await _context.SaveChangesAsync();
+            
             }
             catch (Exception)
             {

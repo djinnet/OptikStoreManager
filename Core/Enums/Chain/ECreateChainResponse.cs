@@ -1,3 +1,3 @@
 ﻿namespace Core.Enums;
 
-public enum ECreateChainResponse { NotFound, FailedToCreate, SuccessToCreate, ChainAlreadyExist }
+public enum ECreateChainResponse { NotFound, FailedToCreate, SuccessToCreate, ChainAlreadyExist, NameIsEmpty }
