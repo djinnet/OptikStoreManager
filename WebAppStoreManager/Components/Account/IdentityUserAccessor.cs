@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Identity;
 using Core.Database;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebAppStoreManager.Components.Account;
 internal sealed class IdentityUserAccessor(UserManager<ApplicationUser> userManager, IdentityRedirectManager redirectManager)

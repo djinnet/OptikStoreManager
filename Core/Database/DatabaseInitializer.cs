@@ -1,12 +1,6 @@
 ﻿using Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Database;
 public class DatabaseInitializer
@@ -44,7 +38,7 @@ public class DatabaseInitializer
     public async Task<bool> Run(bool EnsureCleanState = true, bool CheckExistedChains = false, bool CheckExistsStores = false, bool CreateAdmin = true)
     {
         //Ensure that database is always in clean state. However it can be disabled.
-        if(EnsureCleanState)
+        if (EnsureCleanState)
         {
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
@@ -68,7 +62,7 @@ public class DatabaseInitializer
             {
 
             }
-            
+
         }
 
         if (!CheckExistsStores)
@@ -99,13 +93,13 @@ public class DatabaseInitializer
                 //single store without a chain
                 await _context.RetailStores.AddAsync(new RetailStore { StoreName = "Optia Vejle", Number = 7, StoreOwner = "Mikkel Nielsen", PostalCode = "7100", Region = "Syddanmark", City = "Vejle", Address = "Nørregade 22", Country = "Danmark", Email = "", Phone = "" });
                 await _context.SaveChangesAsync();
-            
+
             }
             catch (Exception)
             {
 
             }
-            
+
         }
 
         if (CreateAdmin)

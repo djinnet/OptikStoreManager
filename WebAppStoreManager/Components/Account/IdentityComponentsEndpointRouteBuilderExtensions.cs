@@ -1,3 +1,4 @@
+using Core.Database;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -8,7 +9,6 @@ using System.Security.Claims;
 using System.Text.Json;
 using WebAppStoreManager.Components.Account.Pages;
 using WebAppStoreManager.Components.Account.Pages.Manage;
-using Core.Database;
 
 namespace Microsoft.AspNetCore.Routing;
 internal static class IdentityComponentsEndpointRouteBuilderExtensions

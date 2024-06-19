@@ -2,11 +2,6 @@
 using Core.Enums;
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Repos;
 
@@ -73,13 +68,13 @@ public class ChainRepo : IChainRepo
         {
             //Get chain with its stores
             RetailChain? retailChain = await _context.RetailChains.Include(i => i.Stores).SingleOrDefaultAsync(i => i.Id == id);
-            if (retailChain == null) 
+            if (retailChain == null)
             {
                 return EDeleteChainResponse.NotFound;
             }
 
             //check if the chain has any existed stores, then returned the error
-            if(retailChain.Stores.Count > 0)
+            if (retailChain.Stores.Count > 0)
             {
                 //Not allowed to deleted because stores existed
                 return EDeleteChainResponse.NotAllowedToDelete;

@@ -1,13 +1,9 @@
-﻿using Azure;
-using Core.Enums;
+﻿using Core.Enums;
 using Core.Exceptions;
 using Core.Models;
 using Core.Repos;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using static System.Net.Mime.MediaTypeNames;
-using System.Xml.Linq;
 
 namespace WebAppStoreManager.Controllers;
 
@@ -44,7 +40,7 @@ public class ChainController : ControllerBase
         try
         {
             IEnumerable<RetailChain> chains = await _repo.GetAsync();
-            if(chains == null)
+            if (chains == null)
             {
                 return NotFound("Chains is not found!");
             }
@@ -55,7 +51,7 @@ public class ChainController : ControllerBase
             _logger.LogCritical(ex, "Crashed Get Chains");
             return BadRequest("Web api is down!");
         }
-        
+
     }
 
     /// <summary>
@@ -108,7 +104,7 @@ public class ChainController : ControllerBase
                     break;
                 case ECreateChainResponse.NotFound:
                     apiresponse.AddModelErrors("Not found chain");
-                    apiresponse.HttpStatus = StatusCodes.Status404NotFound;                    
+                    apiresponse.HttpStatus = StatusCodes.Status404NotFound;
                     break;
                 case ECreateChainResponse.ChainAlreadyExist:
                     apiresponse.AddModelErrors($"Chain Name {chainValue?.ChainName} already exists. Please choose another name.");
@@ -149,7 +145,7 @@ public class ChainController : ControllerBase
             {
                 case EUpdateChainResponse.NotFound:
                     apiresponse.AddModelErrors($"Not found the chain from id");
-                    apiresponse.HttpStatus = StatusCodes.Status404NotFound;                    
+                    apiresponse.HttpStatus = StatusCodes.Status404NotFound;
                     break;
                 case EUpdateChainResponse.ChainAlreadyExist:
                     apiresponse.AddModelErrors($"Chain name {Updatedchain?.ChainName} already exists. Please choose another name.");
@@ -157,7 +153,7 @@ public class ChainController : ControllerBase
                     break;
                 case EUpdateChainResponse.FailedToUpdate:
                     apiresponse.AddModelErrors("Failed to update chain");
-                    apiresponse.HttpStatus = StatusCodes.Status400BadRequest;                    
+                    apiresponse.HttpStatus = StatusCodes.Status400BadRequest;
                     break;
                 case EUpdateChainResponse.ItemIsNull:
                     apiresponse.AddModelErrors("Cannot find model");
@@ -199,13 +195,14 @@ public class ChainController : ControllerBase
                     apiresponse.HttpStatus = StatusCodes.Status400BadRequest;
                     break;
                 case EDeleteChainResponse.NotAllowedToDelete:
-                    apiresponse.AddModelErrors("The chain is not allowed to be deleted becauase there exist stores in the chain.");
+                    apiresponse.AddModelErrors("The chain is not allowed to be deleted because there exist stores in the chain.");
                     apiresponse.HttpStatus = StatusCodes.Status400BadRequest;
                     break;
             }
 
             //If no errors found, set to success msg
-            if(apiresponse.Errors.Count < 0) {
+            if (apiresponse.Errors.Count < 0)
+            {
                 apiresponse.Result = "The chain is deleted.";
             }
 
@@ -218,4 +215,4 @@ public class ChainController : ControllerBase
         }
     }
 }
-   
+

@@ -123,7 +123,6 @@
     private async Task HandleValidSubmit()
     {
         if (CurrentChain == null) return;
-        //(string AccessToken, string RefreshToken) = await loginService.GetToken();
 
         var response = await client.UpdateChainAsync(CurrentChain);
         if (response == null)
@@ -132,14 +131,14 @@
             return;
         }
 
-        if (response.httpstatus == 200)
+        if (response.Httpstatus == 200)
         {
             navigationManager.NavigateTo("/chains");
         }
         else
         {
             //arr into an single string
-            ErrorMsg = string.Join(",", response.errors);
+            ErrorMsg = string.Join(",", response.Errors);
         }
     }
 }

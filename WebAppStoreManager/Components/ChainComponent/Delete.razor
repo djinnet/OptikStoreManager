@@ -84,7 +84,6 @@
 
     private async Task DeleteConfirm(MouseEventArgs e)
     {
-        //(string AccessToken, string RefreshToken) = await loginService.GetToken();
         var response = await client.DeleteChainAsync(Id);
         if (response == null)
         {
@@ -92,14 +91,14 @@
             return;
         }
 
-        if (response.httpstatus == 200)
+        if (response.Httpstatus == 200)
         {
             navigationManager.NavigateTo("/chains");
         }
         else
         {
             //arr into an single string
-            ErrorMsg = string.Join(",", response.errors);
+            ErrorMsg = string.Join(",", response.Errors);
         }
     }
 }

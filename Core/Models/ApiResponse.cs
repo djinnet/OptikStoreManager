@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Core.Models;
+
+/// <summary>
+/// This is the API response that contains a result, a status and a httpstatus/code along with the list of errors.
+/// </summary>
+/// <typeparam name="T">The result</typeparam>
+/// <typeparam name="E">The status</typeparam>
 public class ApiResponse<T, E>
 {
     public ApiResponse(T result, E status)

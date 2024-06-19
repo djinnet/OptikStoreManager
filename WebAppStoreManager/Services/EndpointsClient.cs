@@ -1,7 +1,7 @@
 ﻿using Core.Models;
-using System.Text;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Text;
 
 namespace WebAppStoreManager.Services;
 
@@ -90,12 +90,12 @@ public class EndpointsClient : IEndpointsClient
     {
         var json = Serialize(store);
         var data = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await _httpClient.PutAsync("api/store/"+store.Id, data);
+        var response = await _httpClient.PutAsync("api/store/" + store.Id, data);
         response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadAsStringAsync();
         return Deserialize<Response<RetailStore>>(content);
     }
-    
+
     public async Task<Response<string>?> DeleteStoreAsync(Guid id)
     {
         var response = await _httpClient.DeleteAsync($"api/store/{id}");
@@ -118,7 +118,7 @@ public class EndpointsClient : IEndpointsClient
     {
         var json = Serialize(chain);
         var data = new StringContent(json, Encoding.UTF8, "application/json");
-        var response = await _httpClient.PutAsync("api/chain/"+chain.Id, data);
+        var response = await _httpClient.PutAsync("api/chain/" + chain.Id, data);
         response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadAsStringAsync();
         return Deserialize<Response<RetailChain>>(content);
@@ -131,12 +131,4 @@ public class EndpointsClient : IEndpointsClient
         var content = await response.Content.ReadAsStringAsync();
         return Deserialize<Response<string>>(content);
     }
-}
-
-public class Response<T>
-{
-    public T result { get; set; }
-    public int httpstatus { get; set; }
-    public string status { get; set; }
-    public List<object> errors { get; set; }
 }

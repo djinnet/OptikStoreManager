@@ -1,14 +1,14 @@
+using Core.Database;
+using Core.Repos;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using WebAppStoreManager.Components;
 using WebAppStoreManager.Components.Account;
-using Core.Database;
-using Core.Repos;
 using WebAppStoreManager.Services;
-using Newtonsoft.Json;
-using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Converters;
 
 namespace WebAppStoreManager;
 public class Program
@@ -21,9 +21,9 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
         builder.Services.AddHttpClient<EndpointsClient>();
-        
+
         builder.Services.AddBlazorBootstrap();
-        
+
         builder.Services.AddTransient<DatabaseInitializer>();
         builder.Services.AddScoped<IChainRepo, ChainRepo>();
         builder.Services.AddScoped<IStoreRepo, StoreRepo>();
@@ -97,7 +97,7 @@ public class Program
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
-        
+
 
         app.UseHttpsRedirection();
 
@@ -109,7 +109,7 @@ public class Program
 
         // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
-        app.MapControllers();        
+        app.MapControllers();
         //app.MapBlazorHub();
 
         using var scope = app.Services.CreateScope();

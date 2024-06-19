@@ -19,7 +19,7 @@ public class RetailStore
     public Guid Id { get; set; }
 
     //the property Is required to filled out
-    public required int Number {  get; set; }
+    public required int Number { get; set; }
 
     //the property Is required to filled out
     public required string StoreName { get; set; }

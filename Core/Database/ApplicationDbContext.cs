@@ -1,8 +1,7 @@
+using Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Core.Models;
-using System.Reflection.Emit;
 
 namespace Core.Database;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>

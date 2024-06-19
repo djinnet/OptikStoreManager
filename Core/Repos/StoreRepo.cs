@@ -2,11 +2,6 @@
 using Core.Enums;
 using Core.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Repos;
 
@@ -22,7 +17,7 @@ namespace Core.Repos;
 /// </summary>
 public class StoreRepo : IStoreRepo
 {
-    private ApplicationDbContext _context {  get; set; }
+    private ApplicationDbContext _context { get; set; }
     public StoreRepo(ApplicationDbContext context)
     {
         _context = context;
@@ -31,13 +26,13 @@ public class StoreRepo : IStoreRepo
     {
         try
         {
-            if(item == null)
+            if (item == null)
             {
                 return (ECreateStoreResponse.ItemIsEmpty, null);
             }
 
             //Check if the number already exists in database with a number value that is provided by an application user
-            if(_context.RetailStores.Any(i => i.Number == item.Number))
+            if (_context.RetailStores.Any(i => i.Number == item.Number))
             {
                 //if the value matched, then it exists. No duplicated number allowed.
                 return (ECreateStoreResponse.NumberAlreadyExist, item);
@@ -49,7 +44,7 @@ public class StoreRepo : IStoreRepo
                 StoreName = item.StoreName,
                 Number = item.Number,
                 CreatedOn = DateTime.UtcNow,
-                ModifiedOn = DateTime.UtcNow,             
+                ModifiedOn = DateTime.UtcNow,
                 //Add chain id if it exists. If item chain id is blank, it is a standalone store. If not, it is connected to an chain
                 ChainId = item.ChainId
             };
@@ -105,26 +100,26 @@ public class StoreRepo : IStoreRepo
 
     public async Task<(EUpdateStoreResponse response, RetailStore? Updatedstore)> UpdateAsync(Guid id, RetailStore item)
     {
-        if(item == null)
+        if (item == null)
         {
             return (EUpdateStoreResponse.ItemIsNull, null);
         }
 
         //check for ids
-        if(id != item.Id)
+        if (id != item.Id)
         {
             return (EUpdateStoreResponse.IDNoMatch, item);
         }
 
         //ID matched with the item
         RetailStore? FoundStore = await _context.RetailStores.FindAsync(id);
-        if(FoundStore == null)
+        if (FoundStore == null)
         {
             return (EUpdateStoreResponse.NotFound, item);
         }
 
         //if the number is a new number
-        if(FoundStore.Number != item.Number)
+        if (FoundStore.Number != item.Number)
         {
             //Check if the number already exists in database with a number value that is provided by an application user
             if (_context.RetailStores.Any(i => i.Number == item.Number))
@@ -133,7 +128,7 @@ public class StoreRepo : IStoreRepo
                 return (EUpdateStoreResponse.NumberAlreadyExist, FoundStore);
             }
         }
-        
+
 
         FoundStore.StoreName = item.StoreName;
         FoundStore.Number = item.Number;
@@ -141,6 +136,6 @@ public class StoreRepo : IStoreRepo
         FoundStore.ModifiedOn = DateTime.UtcNow; //updated to current time
 
         await _context.SaveChangesAsync();
-        return (EUpdateStoreResponse.SuccessToUpdate,  FoundStore);
+        return (EUpdateStoreResponse.SuccessToUpdate, FoundStore);
     }
 }
