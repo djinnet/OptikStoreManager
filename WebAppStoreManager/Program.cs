@@ -69,6 +69,7 @@ public class Program
             n.SerializerSettings.Converters.Add(new StringEnumConverter());
         });
 
+        //Generate swagger file
         builder.Services.AddSwaggerGen(option =>
         {
             option.SwaggerDoc("v1", new OpenApiInfo
@@ -84,6 +85,7 @@ public class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
+            //Do the swagger (only in development)
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -110,7 +112,6 @@ public class Program
         // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
         app.MapControllers();
-        //app.MapBlazorHub();
 
         using var scope = app.Services.CreateScope();
         var services = scope.ServiceProvider;
