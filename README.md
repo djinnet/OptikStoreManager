@@ -7,7 +7,7 @@ The project was developed for the job interview with OptikIT with the limited ti
 ## How to install:
 1. Clone the repository
 2. Open the solution in Visual Studio
-3. Set the StoreManager.Web project as the startup project
+3. Set the StoreManager.WebAppStoreManager project as the startup project
 4. Run the solution
 
 ## How to run the tests:
