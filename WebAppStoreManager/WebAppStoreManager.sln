@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAppStoreManager", "WebAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Core\Core.csproj", "{92648BE2-2416-4E97-B10B-AA5ACF8D5E34}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\Tests\Tests.csproj", "{AA83C1E2-F340-4A8F-88F9-DC2E3C0B73D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{92648BE2-2416-4E97-B10B-AA5ACF8D5E34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92648BE2-2416-4E97-B10B-AA5ACF8D5E34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92648BE2-2416-4E97-B10B-AA5ACF8D5E34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA83C1E2-F340-4A8F-88F9-DC2E3C0B73D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA83C1E2-F340-4A8F-88F9-DC2E3C0B73D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA83C1E2-F340-4A8F-88F9-DC2E3C0B73D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA83C1E2-F340-4A8F-88F9-DC2E3C0B73D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
